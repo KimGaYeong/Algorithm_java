@@ -42,7 +42,16 @@ public class bj1167 {
         dfs(longestnode, 0,0);
         System.out.println(count);
     }
+/*
+처음 작성 코드  : 객체 사용 X, int[][] 배열 사용.  따라서 배열의 크기 만큼 0이 아닌 부분
+            (노드끼리 이어지는 부분)을 탐색해야 하므로 V*V만큼 반복문 돌게 됨.
+            visit으로 각 노드에 방문 했는지 안해줬는지를 따졌음
+            --> 메모리 초과.
 
+정답 처리된 코드 :  객체를 사용하고 V만큼이 아니라 node가 가지고 있는 이어진 노드의 갯수 만큼 반복문 돔
+            --> 통과
+
+ */
     public static class Node{
         int to;
         int weight;
