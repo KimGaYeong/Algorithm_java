@@ -103,6 +103,7 @@ public class bj2580 {
         }
         return true;
     }
+
     public static class Info{
         int x, y;
 

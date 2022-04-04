@@ -28,7 +28,7 @@ import java.util.StringTokenizer;
 -> 일차적으로 공을 색깔과 크기순으로 정렬하는게 편할 듯?
 크기 : 2000개 색깔 : (공개수) 200000개.
 크기를 우선적으로 정렬해버리자.
-크기로 정렬하고 색깔 같은걸 쳐내는게 빠를까... (v)
+크기로 정렬하고 색깔 같은걸 처리하자.. (v)
 
  */
 
@@ -36,8 +36,6 @@ public class bj10800 {
     static Ball[] balls;
     static int[] ballsum, ballcolor;
     public static void main(String[] args) throws IOException {
-        InputStream input = bj19228.class.getResourceAsStream("input.txt");
-        System.setIn(input);
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
         StringBuilder sb = new StringBuilder();
@@ -60,23 +58,29 @@ public class bj10800 {
         Arrays.sort(balls);
         System.out.println(Arrays.toString(balls));
 
-        int tmpsum =0;
+        int tmpsum =0; //누적합 저장
         int j=0;
         for(int i=0;i<N;i++){
             Ball target = balls[i];
             Ball compare = balls[j];
-            System.out.println();
-            System.out.println("target : " + target);
-            System.out.println("-> compare : " + compare);
-            System.out.println("j : " + j);
+            System.out.println("target_color : "+ target.color + " compare_color : "+ compare.color);
+            System.out.println("target_size : "+ target.size + " compare_size : "+ compare.size);
+
+
             while(compare.size<target.size){
-                System.out.println("----compare : " + compare);
-                tmpsum += compare.size;
-                ballcolor[compare.color-1] += compare.size;
+                tmpsum += compare.size; //사이즈 누적합
+                ballcolor[compare.color-1] += compare.size; // 조건에 맞으면 일단 해당 색깔에 따라 저장.
                 j++;
                 compare = balls[j];
             }
+            System.out.println("tmpsum : "  + tmpsum);
+            System.out.println("ballcolor" + Arrays.toString(ballcolor));
+            //전체 합에서 나랑 같은 색깔 애가 먹을 수 있는 만큼은 제외시켜줌.
             ballsum[target.idx] = tmpsum - ballcolor[target.color-1];
+            System.out.println("ballxum" + Arrays.toString(ballsum));
+
+            System.out.println("********************************");
+
         }
 
         for(int i=0;i<N;i++){
