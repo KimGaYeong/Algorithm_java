@@ -47,7 +47,6 @@ public class bj16234 {
             }
             if(one_Cnt==N*N) break; //연합의 개수가 칸의 개수가 되면 더이상 연합을 만들 수 없으므로 break!
             day++;
-
         }
         System.out.println(day);
     }
@@ -77,6 +76,7 @@ public class bj16234 {
                 }
             }
         }
+
         //System.out.println(open + " sum : " + sum + " 개수 : " + open.size());
         if(open.size()==1) one_Cnt++; //개인 연합인 경우 개수를 센다.
         //각 칸의 인구수 : 연합 인구수 / 연합 칸 개수

@@ -35,13 +35,13 @@ public class bj2580 {
 
         //스도쿠 내에서 빈칸이 뚫려있는 개수 만큼 채워야 한다.
         int size = infos.size();
-        BFS(0);
+        BFS(size-1);
 
     }
 
     public static void BFS(int cnt){
         //base part
-        if(cnt==infos.size()){
+        if(cnt<0){
             //check하기
             draw();
             System.exit(0);
@@ -55,7 +55,7 @@ public class bj2580 {
             if( map[cx][cy]==0 && check(cx,cy,i)){
                 //하나 채워보고
                 map[cx][cy] = i;
-                BFS(cnt+1); //채워야 할 0 개수 하나 줄이고~
+                BFS(cnt-1); //채워야 할 0 개수 하나 줄이고~
                 map[cx][cy] = 0; //다음 반복을 위해 빈칸으로 다시 바꿔준다.
             }
         }

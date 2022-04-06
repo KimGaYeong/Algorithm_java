@@ -128,10 +128,12 @@ public class bj20058 {
             result=c;
         }
     }
+
     public static void rotate(int x, int y, int L) {
         // 돌린 크기만큼으로 생성해준다.
         int[][] copyMap = new int[L][L];
         int[][] original = new int[L][L];
+
         for(int i=x;i<x+L;i++){
             for(int j=y;j<y+L;j++){
                 original[i-x][j-y] = map[i][j];
@@ -149,7 +151,9 @@ public class bj20058 {
                 map[i+x][j+y] = copyMap[i][j];
             }
         }
+
     }
+
 
     public static void Find(int x, int y){
         int cnt=0;
@@ -165,6 +169,7 @@ public class bj20058 {
             queue.add(new Info(x,y));
         }
     }
+
 
     public static boolean isIn(int x, int y){
         return x>=0 && y>=0 && x<N && y<N;
