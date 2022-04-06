@@ -14,7 +14,6 @@ import java.util.*;
  *
  */
 public class bj2580 {
-    static boolean finish;
     static int[][] map = new int[9][9];
     static ArrayList<Info> infos;
     static StringBuilder sb = new StringBuilder();
@@ -22,12 +21,11 @@ public class bj2580 {
         InputStream input = bj2580.class.getResourceAsStream("input.txt");
         System.setIn(input);
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st;
         infos = new ArrayList<>();
         for(int i=0;i<9;i++){
-            st = new StringTokenizer(br.readLine());
+            String str = br.readLine();
             for(int j=0;j<9;j++){
-                map[i][j] = Integer.parseInt(st.nextToken());
+                map[i][j] = str.charAt(j)-'0';
                 //채워야 할 부분을 저장
                 if(map[i][j] == 0){
                     infos.add(new Info(i,j));
@@ -37,22 +35,17 @@ public class bj2580 {
 
         //스도쿠 내에서 빈칸이 뚫려있는 개수 만큼 채워야 한다.
         int size = infos.size();
-        BFS(size-1);
+        BFS(0);
 
-        System.out.println(sb);
     }
 
     public static void BFS(int cnt){
         //base part
-        if(cnt<0){
+        if(cnt==infos.size()){
             //check하기
-            finish = true;
             draw();
-            return;
+            System.exit(0);
         }
-
-        if(finish) return; //만약 스도쿠가 채워졌다면 어떤 것이든지 출력하면 됨.
-
         //inductive part
         int cx = infos.get(cnt).x;
         int cy = infos.get(cnt).y;
@@ -62,7 +55,7 @@ public class bj2580 {
             if( map[cx][cy]==0 && check(cx,cy,i)){
                 //하나 채워보고
                 map[cx][cy] = i;
-                BFS(cnt-1); //채워야 할 0 개수 하나 줄이고~
+                BFS(cnt+1); //채워야 할 0 개수 하나 줄이고~
                 map[cx][cy] = 0; //다음 반복을 위해 빈칸으로 다시 바꿔준다.
             }
         }
@@ -70,30 +63,24 @@ public class bj2580 {
 
     // 스도쿠가 완성되었으면 출력해줌!
     public static void draw(){
-
         for(int i=0;i<9;i++){
             for(int j=0;j<9;j++){
-                sb.append(map[i][j] + " ");
+                sb.append(map[i][j]);
             }
             sb.append("\n");
         }
+        System.out.println(sb);
     }
 
 
     //스도쿠에 해당 숫자가 들어가도 되는지를 체크해준다.
     public static boolean check(int x, int y, int num){
-        //1. 한줄로 넣어도 되는지 확인 (일단 뭘 넣는지는 상관 없음. 같은거만 없으면 됨)
+
         for(int i=0;i<9;i++){
-            if(map[i][y]==num) return false; //세로줄 확인
             if(map[x][i]==num) return false; //가로줄 확인
+            if(map[i][y]==num) return false; //세로줄 확인
         }
 
-        //2. 좌표 x,y가 속한 3x3 정사각형의 9칸 확인하기
-        //-> 각 좌표를 3으로 나눈 몫에 3을 곱하면 해당 작은 정사각형의 맨 왼쪽 위 인덱스가 나옴!
-        //ex) 좌표가 (5,6)이라면?
-        // x좌표인 5가 포함된 작은 정사각형의 0,0에 해당되는 x좌표 인덱스 : 5/3 =1, 1*3 =3
-        // y좌표인 6이 포함된 작은 정사각형의 0,0에 해당되는 y좌표 인덱스 : 6/3 =2, 2*3 =6
-        // -> 따라서 (3,6부터 3*3 for문을 돌면서 확인할 수 있다.
         int sx = 3*(x/3);
         int sy = 3*(y/3);
         for(int i=sx;i<sx+3;i++){
@@ -101,6 +88,7 @@ public class bj2580 {
                 if(map[i][j] == num) return false;
             }
         }
+
         return true;
     }
 

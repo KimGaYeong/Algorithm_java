@@ -14,22 +14,25 @@ import java.util.*;
  * 겨울 : 로봇이 돌아다니며 양분을 추가
  */
 public class bj16235 {
-
+    static int N, M, K;
+    static int[][] map, add;
+    static int[][] del = {{-1,0},{1,0},{0,-1},{0,1},{1,1},{-1,-1},{1,-1},{-1,1}};
+    static Queue<Tree> alive, dead;
+    static PriorityQueue<Tree> trees;
     public static void main(String[] args) throws IOException {
-        InputStream input = bj2580.class.getResourceAsStream("input.txt");
+        InputStream input = bj16235.class.getResourceAsStream("input.txt");
         System.setIn(input);
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
         st = new StringTokenizer(br.readLine());
         //입력
-        int N = Integer.parseInt(st.nextToken()); // 땅 한 변의 크기
-        int M = Integer.parseInt(st.nextToken()); // 초기 나무 개수
-        int K = Integer.parseInt(st.nextToken()); // K년 후 살아있는 나무의 개수 구하기
-        int[][] del = {{-1,0},{1,0},{0,-1},{0,1},{1,1},{-1,-1},{1,-1},{-1,1}};
+        N = Integer.parseInt(st.nextToken()); // 땅 한 변의 크기
+        M = Integer.parseInt(st.nextToken()); // 초기 나무 개수
+        K = Integer.parseInt(st.nextToken()); // K년 후 살아있는 나무의 개수 구하기
 
         //땅(양분) 입력받기
-        int[][] map = new int[N][N];
-        int[][] add = new int[N][N];
+        map = new int[N][N];
+        add = new int[N][N];
         for(int i=0;i<N;i++){
             st = new StringTokenizer(br.readLine());
             for(int j=0;j<N;j++){
@@ -39,8 +42,8 @@ public class bj16235 {
             //System.out.println(Arrays.toString(map[i]));
         }
 
+        trees = new PriorityQueue<>();
         //나무 입력받기
-        ArrayList<Tree> trees = new ArrayList<>();
         for(int i=0;i<M;i++){
             st = new StringTokenizer(br.readLine());
             int x = Integer.parseInt(st.nextToken())-1;
@@ -48,59 +51,94 @@ public class bj16235 {
             int z = Integer.parseInt(st.nextToken());
             trees.add(new Tree(x,y,z));
         }
-        //Collections.sort(trees);
-        ArrayList<Tree> DeadTree = new ArrayList<>();
+        alive = new LinkedList<>();
+        dead = new LinkedList<>();
 
         int cnt =0;
         // 계절 Cycle
-        while(true){ //K:1000, M:100, 8 -> 800000
-            if(cnt==K) break;
-            Iterator<Tree> iterator = trees.iterator();
-            //봄
-            while(iterator.hasNext()){
-                Tree t = iterator.next();
-                //나무가 자기 나이만큼 양분 먹음. (r,c)에 양분이 내 나이보다 크거나 같으면 먹고 없으면 나무 쥬금
-                if(map[t.r][t.c] >= t.age){
-                    map[t.r][t.c]-=t.age;
-                    t.age+=1;
-                }else{
-                    //죽은 나무들은 여름에 양분이 된다.
-                    DeadTree.add(t);
-                    iterator.remove();
-                }
-            }
+        while(K-->0){ //K:1000, M:100, 8 -> 800000
+            spring();
 
-            //여름
-            for(Tree t : DeadTree){
-                map[t.r][t.c] += (int)(t.age/2);
-            }
+            summer();
 
-            //가을
-            int tsize = trees.size();
-            for(int i=0;i<tsize;i++){
-                Tree t = trees.get(i);
-                if(t.age%5 ==0){
-                    for(int d=0;d<8;d++){
-                        int nx = t.r + del[d][0];
-                        int ny = t.c + del[d][1];
-                        if(nx>=0 && ny>=0 && nx<N && ny<N){
-                            trees.add(new Tree(nx,ny,1));
-                        }
-                    }
-                }
-            }
-            //겨울
-            for(int i=0;i<N;i++){
-                for(int j=0;j<N;j++){
-                    map[i][j] += add[i][j];
-                }
-            }
-            cnt++;
+            fall();
+
+            winter();
         }
 
         System.out.println(trees.size());
     }
-    public static class Tree{
+
+    private static void winter() {
+        //겨울
+        for(int i=0;i<N;i++){
+            for(int j=0;j<N;j++){
+                map[i][j] += add[i][j];
+            }
+        }
+    }
+
+    private static void fall() {
+        //가을
+        // 나이가 5배수인 애들이 번식함.
+        while(!alive.isEmpty()){
+            Tree tree = alive.poll();
+            int x = tree.r;
+            int y = tree.c;
+            int age = tree.age;
+
+            trees.add(tree);
+
+            if(age%5 ==0){
+                for (int d=0;d<8;d++) {
+                    int nx = x + del[d][0];
+                    int ny = y + del[d][1];
+                    if(isIn(nx,ny)){
+                        trees.add(new Tree(nx,ny, 1));
+                    }
+                }
+            }
+        }
+    }
+
+    private static void summer() {
+        // 여름
+        // 봄에 죽은 나무가 양분으로 변함. (죽은 나무 나이 /2)
+        while (!dead.isEmpty()) {
+            Tree tree = dead.poll();
+            int x = tree.r;
+            int y = tree.c;
+            int age = tree.age;
+            map[x][y] += (int) (age/2);
+        }
+    }
+
+    private static void spring() {
+        //봄
+        while(!trees.isEmpty()){
+            Tree tree = trees.poll();
+            int x = tree.r;
+            int y = tree.c;
+            int age = tree.age;
+
+            // 자기 나이만큼 먹고, 먹으면 나이 1 증가.
+            if (age <= map[x][y]) {
+                map[x][y] -= age;
+                age += 1;
+                alive.add(new Tree(x, y, age));
+            }
+            // 못먹으면 죽음.
+            else {
+                dead.add(new Tree(x, y, age));
+            }
+        }
+    }
+
+    public static boolean isIn(int x, int y){
+        return x>=0 && y>=0 && x<N && y<N;
+    }
+
+    public static class Tree implements Comparable<Tree>{
         int r, c, age;
 
         public Tree(int r, int c, int age) {
@@ -109,7 +147,10 @@ public class bj16235 {
             this.age = age;
         }
 
-
+        @Override
+        public int compareTo(Tree o) {
+            return this.age-o.age;
+        }
     }
 
 }
