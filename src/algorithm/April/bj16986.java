@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 /**
  * map(i, j) ( ==2 ..i가 이김) (==1 .. 비김) (==0.. i가 짐)
@@ -23,7 +24,7 @@ public class bj16986 {
         StringTokenizer st;
         StringBuilder sb = new StringBuilder();
 
-        arr = new int[3][20];
+        arr = new int[3][20]; //지우, 경희, 민호 뭐 낼지 저장.
         idx = new int[3];
         win = new int[3];
         ans=0;
@@ -48,25 +49,23 @@ public class bj16986 {
             arr[2][i] = Integer.parseInt(st.nextToken());
         }
 
-        /* 손동작의 수 : N 즉 N!만큼의 개수를 확인한 후 조건에 부합하는지를 check하기(지우가 이기는지) */
+        /* 손동작의 수 : 지우의 손동작 수 N 즉 N!만큼의 개수를 확인한 후 조건에 부합하는지를 check하기(지우가 이기는지) */
 
-        selected = new boolean[N+1];
+        selected = new boolean[N+1]; // 지우가 뭘 골랐는지! (겹치면 안됨)
         DFS(0);
         System.out.println(ans);
     }
 
     public static void DFS(int n){
-        if(n==N) {
-            for(int i=0; i<3; i++) {
-                idx[i]=0;
-                win[i]=0;
-            }
+        if(n==N) { //
+            Arrays.fill(win, 0);
+            Arrays.fill(idx, 0);
             check(0, 1);
             return;
         }
 
         for(int i=1; i<=N; i++) {
-            if(!selected[i]) {
+            if(!selected[i]) { //지우가 고르지 않은 것 중.
                 selected[i] = true;
                 arr[0][n] = i;
                 DFS(n+1);
@@ -75,34 +74,39 @@ public class bj16986 {
         }
     }
 
-    public static void check(int first, int second){
+    public static void check(int first, int second){ //실제 가위바위보 시켜 보기!
         boolean[] hadGame = new boolean[3];
-        hadGame[first] = true;
-        hadGame[second] = true;
         int winner = 0;
 
-        if(map[arr[first][idx[first]]][arr[second][idx[second]]]==2)
+        //일단 게임 한 애들은 게임 했다는 표시!
+        hadGame[first] = true;
+        hadGame[second] = true;
+
+        //경기 결과 반환.
+        if(map[arr[first][idx[first]]][arr[second][idx[second]]]==2){
             winner = first;
-
-        else if(map[arr[first][idx[first]]][arr[second][idx[second]]]==1)
+        }else if(map[arr[first][idx[first]]][arr[second][idx[second]]]==1) {
             winner = Math.max(first, second);
-
-        else if(map[arr[first][idx[first]]][arr[second][idx[second]]]==0)
+        }else if(map[arr[first][idx[first]]][arr[second][idx[second]]]==0) {
             winner = second;
+        }
 
         win[winner]++;
         idx[first]++;
         idx[second]++;
 
-        if(win[1]==K || win[2]==K) return;
+        if(idx[0]>=N) return; //지우가 같은걸 낼 수밖에 없음.
+
+        //승리자가 뽑혔으면 중단할지, 계속할지 후처리.
+        if(win[1]==K || win[2]==K) return; //다른애들이 선승하면 안됨.
 
         if(win[0]==K) {
             ans = 1;
             return;
         }
 
-        if(idx[0]>=N) return;
 
+        //다음 경기 진행.
         for(int i=0; i<3; i++) {
             if(!hadGame[i])
                 check(winner, i);
