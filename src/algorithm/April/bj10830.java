@@ -71,7 +71,6 @@ public class bj10830 {
         return dest;
     }
 
-
     // src는 복사할 배열(=부분배열), dest는 합쳐질 배열(= 배열 C)
     public static void merge(long[][] src, long[][] dest, int row, int col, int size) {
 
