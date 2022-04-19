@@ -17,7 +17,6 @@ import java.util.*;
  *
  *  디스크 디렉토리는 문자열이고, 사전순으로 구분되어야 한다.
  *
- *
  * */
 public class bj7432 {
 
@@ -28,9 +27,6 @@ public class bj7432 {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
         int N = Integer.parseInt(br.readLine());
-
-        Trie trie = new Trie("");
-        Trie node;
 
         ArrayList<ArrayList<String>> arr = new ArrayList<>();
         for(int i=0;i<N;i++){
@@ -53,30 +49,30 @@ public class bj7432 {
             //System.out.println(arr.get(i));
         }
 
+        Trie trie = new Trie("");
+        Trie node;
+
         int n =0;
-        while(true) {
-            if(n==N) break;
+        while (n != N) {
             node = trie;
 
             int k = arr.get(n).size();
-            int K=0;
-            while(true) {
-                if(K==k) break;
+            int K = 0;
+            while (K != k) {
                 String name = arr.get(n).get(K);
                 int index = -1;
 
-                for(int i = 0; i < node.list.size(); i++) {
-                    if(node.list.get(i).name.equals(name)) {
+                for (int i = 0; i < node.list.size(); i++) {
+                    if (node.list.get(i).name.equals(name)) {
                         index = i;
                         break;
                     }
                 }
 
-                if(index == -1) {
+                if (index == -1) {
                     node.list.add(new Trie(name));
-                    node = node.list.get(node.list.size()-1);
-                }
-                else {
+                    node = node.list.get(node.list.size() - 1);
+                } else {
                     node = node.list.get(index);
                 }
                 K++;
@@ -90,18 +86,10 @@ public class bj7432 {
 
     public static void print(Trie trie, int depth) {
 
-        Collections.sort(trie.list, new Comparator<Trie>() {
-            @Override
-            public int compare(Trie o1, Trie o2) {
-                return o1.name.compareTo(o2.name);
-            }
-        });
-
+        trie.list.sort((o1, o2) -> o1.name.compareTo(o2.name));
 
         if(depth != -1) {
-            for(int i = 0; i < depth; i++) {
-                sb.append(" ");
-            }
+            sb.append(" ".repeat(Math.max(0, depth)));
             sb.append(trie.name).append("\n");
         }
 
