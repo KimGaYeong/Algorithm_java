@@ -9,7 +9,7 @@ import java.util.*;
 public class bj1700 {
     static int N, K;
     static List<Integer> multitap, order;
-    static int max, tmpmax, sub, cnt;
+    static int outtmp, sub, cnt;
 
     public static void main(String[] args) throws IOException {
         InputStream input = bj15988.class.getResourceAsStream("input.txt");
@@ -18,48 +18,49 @@ public class bj1700 {
         StringTokenizer st;
 
         st = new StringTokenizer(br.readLine());
-        N = Integer.parseInt(st.nextToken());
-        K = Integer.parseInt(st.nextToken());
+        N = Integer.parseInt(st.nextToken()); //멀티탭 구멍
+        K = Integer.parseInt(st.nextToken()); //전기용품 사용
         cnt = 0;
-        multitap = new LinkedList<>();
-        order = new LinkedList<>();
+        multitap = new LinkedList<>(); //현재 멀티탭 상태
+        order = new LinkedList<>(); //전기용품 사용 순서
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < K; i++) {
             order.add(Integer.parseInt(st.nextToken()));
         }
 
-        max = 0;
-        tmpmax = 0;
-        sub = 0;
+        outtmp = 0; sub = 0;
+        //멀티탭이 찼는지 여부에 따라 다름.
         for (int i = 0; i < K; i++) {
+            //현재 멀티템에 꽂아야 할 애 : order.get(i)
 
-            //꽃아야 할 놈이 이미 꽃혀있음.
+            //멀티탭에 꽂아야 할 놈이 이미 꽂혀있음. -> (넘어감)
             if (multitap.contains(order.get(i))) {
                 continue;
             }
 
-            //멀티탭이 다 안찼으면 꽂아주면 된다.
-            if (multitap.size() < N) {
-                multitap.add(order.get(i));
-            } else if (multitap.size() == N) {
-                //다 안찼을 때
+            // 멀티탭에 없는 애를 꼽아야 하는 경우.
+            if (multitap.size() < N) { //멀티탭이 다 안찬 경우
+                multitap.add(order.get(i)); //멀티탭에 꽂아주면 됨.
+            } else if (multitap.size() == N) { //멀티탭이 다 찬 경우
                 for (int j = 0; j < N; j++) {
+                    //멀티탭을 탐색하며
                     int out = multitap.get(j);
-                    //지금 꽂힌 애들중에 나중에 안쓰이는 애들이 있는지 확인함.
 
-                    if (!order.subList(i, K).contains(out)) {//없으면 걔 자리에 꽂음.
-                        tmpmax = j;
+                    //멀티텝에 나중에 다시 꽂지 않아도 되는 애가 있는지 확인.
+                    if (!order.subList(i, K).contains(out)) {//꽂지 않아도 되는애가 있음
+                        outtmp = j; //걔 자리에 꼽으면 됨.
                         break;
                     } else if (order.subList(i, K).indexOf(out) > sub) {
+                        //나중에 꼽아야 되는 애가 있으면 최대한 나중일수록 좋음.
                         sub = order.subList(i, K).indexOf(out);
-                        tmpmax = j;
+                        outtmp = j;
                     }
                 }
 
-                multitap.remove(tmpmax);
+                //뽑을 애를 뽑고, 새로 넣어야 될 애를 넣음.
+                multitap.remove(outtmp);
                 multitap.add(order.get(i));
-                sub = 0;
-                tmpmax = 0;
+                sub = 0; outtmp = 0;
                 cnt += 1;
             }
         }

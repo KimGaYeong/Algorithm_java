@@ -112,11 +112,14 @@ public class bj2933 {
                 }
             }
         }
+
         char[][] copymap = copy(map);
 
         //바닥에 붙었다!
         if(!isBottom){
             // 밑으로 내릴 수 있는지 확인
+            System.out.println("Down할 가능성 있는 queue 확인" + isFloat);
+
             down(isFloat, copymap);
         }else{
             return;
@@ -126,21 +129,23 @@ public class bj2933 {
     public static void down(Queue<Info> isfloat, char[][] copymap){
         boolean isPossible = true;
         char[][] copyCopymap = copy(copymap); //임시 배열.
-        PriorityQueue<Info> infos = new PriorityQueue<>();
+        List<Info> infos = new LinkedList<>();
 
         while(!isfloat.isEmpty()){
             infos.add(isfloat.poll());
         }
-        System.out.println(infos);
 
-        while(true){
+        Collections.sort(infos);
+        //System.out.println("infos" + infos);
+
+        loop : while(true){
 //
 //            for(int j=0;j<R;j++){
 //                System.out.println(Arrays.toString(copymap[j]));
 //            }
 //            System.out.println("-----------------");
 
-            for(Info info : infos){
+            loop2 :for(Info info : infos){
                 System.out.println(info);
                 if(copyCopymap[info.x+1][info.y]=='.'){
                     System.out.println("success : x : " + info.x + " y :  "+ info.y );
@@ -149,15 +154,16 @@ public class bj2933 {
                 }else{
                     System.out.println("fail : x : " + info.x + " y :  "+ info.y );
                     isPossible = false;
-                    break;
+                    break loop;
                 }
 
             }
+
             //만약 다 옮길 수 있으면?
             if(isPossible){
                 copymap  = copy(copyCopymap); //갱신
             }else{
-                break;
+                break loop;
             }
         }
 
@@ -188,8 +194,8 @@ public class bj2933 {
 
         @Override
         public int compareTo(Info o) {
-            if(this.x == o.x) return Integer.compare(o.y, this.y);
-            else return Integer.compare(o.x, this.x);
+            if(this.x == o.x) return o.y-this.y;
+            else return o.x-this.x;
         }
 
         @Override

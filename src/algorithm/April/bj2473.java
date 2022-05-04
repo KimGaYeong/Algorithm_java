@@ -23,17 +23,23 @@ public class bj2473 {
         StringBuilder sb = new StringBuilder();
 
         N = Integer.parseInt(br.readLine());
-        arr = new long[N];
-        result = new long[3];
+        arr = new long[N]; //주어진 용액 저장
+        result = new long[3]; //정답 용액 저장
 
         st = new StringTokenizer(br.readLine());
         for(int i=0;i<N;i++){
             arr[i] = Integer.parseInt(st.nextToken());
         }
 
-        //정렬
+        // 용액의 최다 크기는 5천이라 아무래도 DFS를 걍 돌리기는 어려울 듯 싶다.
+        // 다 알칼리일 수도, 다 산성일 수도 있어서 알칼리랑 산성을 분리해서 저장하기는 어려울 듯 싶고...
+
+        //-> 하나를 지정해놓고 이분 탐색으로 2개를 풀자.
+
+        // 이분탐색 하기 위해 정렬
         Arrays.sort(arr);
-        //용액 3개 넘을 경우 답이 Int범위를 넘어감.
+
+        //용액 3개고 다 최댓값일 경우 답이 Int범위를 넘어감. -> long
         //최소 012 ~ 최대 N-3N-2N-1 -> 제일 최대인 값을 골랐다고 가정하고
         //나머지 두개를 이분 탐색으로 찾아서 값을 비교함.
         for(int i=2;i<=N-1;i++){
@@ -47,10 +53,7 @@ public class bj2473 {
         }
 
         System.out.println(sb);
-        // 용액의 최다 크기는 5천이라 아무래도 DFS를 걍 돌리기는 어려울 듯 싶다.
-        // 다 알칼리일 수도, 다 산성일 수도 있어서 알칼리랑 산성을 분리해서 저장하기는 어려울 듯 싶고...
 
-        //-> 하나를 지정해놓고 이분 탐색으로 2개를 풀자.
     }
 // idx idx+1 ..... N-1
     public static void binarySearch(int idx){
@@ -58,7 +61,7 @@ public class bj2473 {
         int mid = idx-1; //최대가 idx(N-1)라면 중간은 idx-1까지
 
         while(low<mid){
-            long tmp = arr[low]+arr[mid]+arr[idx];
+            long tmp = arr[low]+arr[mid]+arr[idx]; //3개 합 구하고
             if(Math.abs(tmp) < min){
                 //최소값 갱신하고
                 min = Math.abs(tmp);
@@ -66,8 +69,8 @@ public class bj2473 {
                 result[0] = arr[low];
                 result[1] = arr[mid];
                 result[2] = arr[idx];
-
             }else{
+                //최소값 아닐 경우
                 if(tmp>0) mid -=1;
                 else low +=1;
             }
