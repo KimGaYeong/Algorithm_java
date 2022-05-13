@@ -49,39 +49,15 @@ public class bj7490 {
 
         //N번째 숫자까지 들어오면 num을 비교해서 맞으면 stringlist에 추가
         if(cnt==N){
-            if(num==0){
-                stringlist.add(str + "\n");
-            }
+            if(num==0) stringlist.add(str + "\n");
             return;
         }
 
         DFS(num + arr[cnt], str + "+" + arr[cnt], cnt+1); // 1 + 2
         DFS(num - arr[cnt], str + "-" + arr[cnt], cnt+1); // 1 - 2
-        if(cnt+2<=N){
-            // +12, -12. cnt를 1개 더 늘려줘야 되서 추가 조건이 필요
+        if(cnt+2<=N){ // +12, -12. cnt를 1개 더 늘려줘야 되서 추가 조건이 필요
             DFS(num + (arr[cnt]*10 + arr[cnt+1]), str + "+" + arr[cnt] + " " + arr[cnt+1], cnt+2);
             DFS(num - (arr[cnt]*10 + arr[cnt+1]), str + "-" + arr[cnt] + " " + arr[cnt+1], cnt+2);
         }
     }
-
 }
-
-/*
-1+2-3
-
-1+2-3+4-5-6+7
-1+2-3-4+5+6-7
-1-2 3+4+5+6+7
-1-2 3-4 5+6 7
-1-2+3+4-5+6-7
-1-2-3-4-5+6+7
-
-1+2-3
-
-1+2-3+4-5-6+7
-1+2-3-4+5+6-7
-1-2 3+4+5+6+7
-1-2 3-4 5+6 7
-1-2+3+4-5+6-7
-1-2-3-4-5+6+7
- */
