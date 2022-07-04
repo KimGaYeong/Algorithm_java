@@ -47,7 +47,6 @@ public class bj14395 {
             for(int i=0;i<4;i++){
                 long nextValue = change(op.val, i);
                 if(set.contains(nextValue) || nextValue<0) continue;
-
                 set.add(nextValue);
                 queue.add(new Operation(nextValue, op.result+strs[i]));
             }

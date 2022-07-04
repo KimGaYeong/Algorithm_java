@@ -9,7 +9,7 @@ public class pg양궁대회 {
         int n = 10;
         int[] info = {0,0,0,0,0,0,0,0,3,4,3};
 
-        //가장 큰 점수차로 우승해야 한다.
+        //가장 큰 점수차로 우승해야 한다. 근데 낮은 점수를 많이 받는게 좋음
         System.out.println(Arrays.toString(solution(n,info)));
         //[1,1,2,0,1,2,2,0,0,0,0]
     }
