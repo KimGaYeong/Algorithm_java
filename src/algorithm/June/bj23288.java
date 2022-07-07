@@ -13,12 +13,12 @@ public class bj23288 {
     static int whatDel, cx, cy;
     static int[][] del = {{-1,0},{0,1},{1,0},{0,-1}}; //북 동 남 서
     static int[][] map;
-    static int dice[][] = {
-            { 0, 2, 0, 0 },
-            { 4, 1, 3, 6 },
-            { 0, 5, 0, 0 },
-            { 0, 6, 0, 0 }
-            };
+    static int[][] dice = {
+                            { 0, 2, 0, 0 },
+                            { 4, 1, 3, 6 }, //dice[1][3] = dice[3][1]
+                            { 0, 5, 0, 0 },
+                            { 0, 6, 0, 0 }
+                          };
     public static void main(String[] args) throws IOException {
         InputStream input = bj21611.class.getResourceAsStream("input.txt");
         System.setIn(input);
@@ -90,7 +90,7 @@ public class bj23288 {
         if (whatDel == 0) { // 북 : 즉 위로 데굴
             /*
             { 0, 2, 0, 0 },
-            { 4, 1, 3, 6 }, 얘가 위로 한칸 데굴 굴러가면
+            { 4, 1, 3, 6 }, 얘가 위로 한칸 데굴 굴러가면 (얘를 들어서 십자가가 겹치는쪽(1)을 위로 정육면체에 감싼다는 느낌으로 생각하면 됨)
             { 0, 5, 0, 0 },
             { 0, 6, 0, 0 }
 

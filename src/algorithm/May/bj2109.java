@@ -2,7 +2,6 @@ package algorithm.May;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -18,8 +17,6 @@ public class bj2109 {
     static int n;
     static PriorityQueue<Lecture> pq;
     public static void main(String[] args) throws IOException {
-        InputStream input = bj1806.class.getResourceAsStream("input.txt");
-        System.setIn(input);
         BufferedReader br= new BufferedReader(new InputStreamReader(System.in));
         StringBuilder sb = new StringBuilder();
         StringTokenizer st;
@@ -36,11 +33,15 @@ public class bj2109 {
             maxc = Math.max(maxc, d);
         }
 
+
         boolean[] check = new boolean[maxc+1];
 
         int sum =0;
         while(!pq.isEmpty()) {
             Lecture lec = pq.poll();
+            //System.out.println(lec);
+            //해당 강의를 해도 되는 기간을 돌면서 강의하지 않은 날이 있다면 강의했다는 뜻으로 체크한다.
+            //이래야 가장 '많은'돈을 받을 수 있음!
             for(int i = lec.day; i >= 0; i--) {
                 if(!check[i]) {
                     check[i] = true;
@@ -61,6 +62,10 @@ public class bj2109 {
             this.day = day;
         }
 
+        /*
+        일단 pay를 기준으루 pay를 많이 주는 순으로 내림차순 정렬한다.
+        이 때 pay가 같을 때는 day를 기준으로 day가 많이 남은 순으로 정렬한다. (강연 날짜가 빠른 순)
+         */
         @Override
         public int compareTo(Lecture o) {
             if(this.pay == o.pay){
@@ -68,6 +73,14 @@ public class bj2109 {
             }else{
                 return -1 *Integer.compare(this.pay,o.pay);
             }
+        }
+
+        @Override
+        public String toString() {
+            return "Lecture{" +
+                    "pay=" + pay +
+                    ", day=" + day +
+                    '}';
         }
     }
 }
