@@ -11,7 +11,7 @@ import java.util.StringTokenizer;
 
 public class bj25307 {
     static int N, M, K, result;
-    static Info start, target, mannequin;
+    static Info start;
     static int[][] Dstore, mlen;
     static boolean[][] check;
     static int[][] del = {{-1,0},{1,0},{0,-1},{0,1}}; //상하좌우로 이동
@@ -28,35 +28,23 @@ public class bj25307 {
         M = Integer.parseInt(st.nextToken());
         K = Integer.parseInt(st.nextToken());
 
+
         Dstore = new int[N][M];
         mlen = new int[N][M];
-        boolean isChair = false;
 
+        Queue<Info> mannequin = new LinkedList<>();
         for(int i=0;i<N;i++){
             st = new StringTokenizer(br.readLine());
             for(int j=0;j<M;j++){
                 Dstore[i][j] = Integer.parseInt(st.nextToken());
                 if(Dstore[i][j] == 4){
                     start = new Info(i,j,0);
-                }else if(Dstore[i][j] ==2){
-                    target = new Info(i,j,0);
-                    isChair = true;
                 }else if(Dstore[i][j] ==3){
-                    mannequin = new Info(i,j,0);
+                    mannequin.add(new Info(i,j,0));
                 }
             }
         }
 
-        if(!isChair){
-            System.out.println(-1);
-            System.exit(0);
-        }
-        for(int i=0;i<N;i++){
-            for(int j=0;j<M;j++){
-                mlen[i][j] = Math.abs(mannequin.x-i) +  Math.abs(mannequin.y-j);
-            }
-            //System.out.println(Arrays.toString(mlen[i]));
-        }
 
         //상하좌우 이동시마다 체력 1 소모
         // 마네킹(3)과의 거리가 K이하여야함.
@@ -67,20 +55,34 @@ public class bj25307 {
         //4의 위치 x,y에서 시작하는 BFS를 돌리자..
 
         result = -1;
-        bfs(start, target);
+        bfsNearMannequin(mannequin);
+        bfs(start);
 
         System.out.println(result);
     }
 
-    public static void bfs(Info start, Info target){
-        check = new boolean[N][M];
+    public static void bfsNearMannequin(Queue<Info> queue){
+        while(!queue.isEmpty()){
+            Info info = queue.poll();
+            for(int d=0;d<4;d++){
+                int nx = info.x + del[d][0];
+                int ny = info.y + del[d][1];
+                if(isIn(nx,ny) && (Dstore[nx][ny]==0 || Dstore[nx][ny]==2) && info.cnt<K){
+                    Dstore[nx][ny] = 1;
+                    queue.add(new Info(nx,ny, info.cnt+1));
+                }
+            }
+        }
+    }
+
+
+    public static void bfs(Info start){
         Queue<Info> queue = new LinkedList<>();
         int x = start.x;
         int y = start.y;
         int c = start.cnt;
 
         queue.add(start);
-        check[x][y] = true;
 
         while(!queue.isEmpty()){
             Info info = queue.poll();
@@ -89,20 +91,20 @@ public class bj25307 {
             int cy = info.y;
             int ccnt = info.cnt;
 
-            if(cx == target.x && cy == target.y){
-                result = ccnt;
-                return;
-            }
 
             for(int d=0;d<4;d++){
                 int nx = cx + del[d][0];
                 int ny = cy + del[d][1];
 
-                if(!isIn(nx,ny)) continue;
-                if(mlen[nx][ny] <= K) continue;
-
-                check[nx][ny] = true;
-                queue.add(new Info(nx,ny, ccnt+1));
+                if(isIn(nx,ny)){
+                    if(Dstore[nx][ny]==0){
+                        queue.add(new Info(nx,ny,ccnt+1));
+                        Dstore[nx][ny]=1;
+                    }else if(Dstore[nx][ny]==2){
+                        System.out.println(ccnt+1);
+                        System.exit(0);
+                    }
+                }
             }
         }
 
@@ -110,7 +112,7 @@ public class bj25307 {
     }
 
     public static boolean isIn(int x, int y){
-        return x>=0 && y>=0 && x<N && y<M && Dstore[x][y]!=1 && !check[x][y];
+        return x>=0 && y>=0 && x<N && y<M;
     }
 
     public static class Info{
