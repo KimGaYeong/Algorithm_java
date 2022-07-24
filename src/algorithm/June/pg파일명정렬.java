@@ -38,11 +38,11 @@ public class pg파일명정렬 {
                 }
             }
 
-            if(second.length()>=5){
-                before = second.substring(0,5);
-                after = second.substring(5);
-                second = before;
-            }
+//            if(second.length()>=5){
+//                before = second.substring(0,5);
+//                after = second.substring(5);
+//                second = before;
+//            }
 
             System.out.println(first + "," + Integer.parseInt(second) + "," + third);
             int secondtoInt = Integer.parseInt(second);
