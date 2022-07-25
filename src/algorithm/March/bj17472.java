@@ -181,7 +181,7 @@ public class bj17472 {
 
         @Override
         public String toString() {
-            return "Node{" +
+            return "Info{" +
                     "from=" + from +
                     ", to=" + to +
                     ", weight=" + weight +

@@ -67,7 +67,7 @@ public class bj1132 {
 
         for (int k=0;k<=9;k++) {
             if(alphabet2[k]!=0){
-                ans += alphabet2[k]*mul;
+                ans += (long) alphabet2[k]*mul;
                 mul--;
             }
 
